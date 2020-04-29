@@ -1,25 +1,23 @@
 """
 Base settings to build other settings files upon.
 """
-
-import os  # noqa: F401
+from pathlib import Path
 
 import environ
 
-BASE_DIR = (
-    environ.Path(__file__) - 3
-)  # (everycheese/config/settings/base.py - 3 = everycheese/)
-APPS_DIR = BASE_DIR.path("everycheese")
+# (everycheese/config/settings/base.py.parents[2] = everycheese/)
+BASE_DIR = Path(__file__).parents[2]
+APPS_DIR = BASE_DIR / "everycheese"
 
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool(
-    "DJANGO_READ_DOT_ENV_FILE", default=True
-)
-if READ_DOT_ENV_FILE:
-    # OS environment variables take precedence over variables from .env
-    print("passou aqui")
-    env.read_env(str(BASE_DIR.path(".env")))
+ENV_FILE = str(BASE_DIR / ".env")
+if Path(ENV_FILE).exists():
+    print(
+        f"Loading environment variables from {ENV_FILE} file.\n"
+        f"Note: OS environment variables take precedence over variables from {ENV_FILE}"
+    )
+    env.read_env(ENV_FILE)
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -41,7 +39,7 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
-LOCALE_PATHS = [BASE_DIR.path("locale")]
+LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -156,11 +154,11 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(BASE_DIR("staticfiles"))
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR.path("static"))]
+STATICFILES_DIRS = [str(APPS_DIR / "static")]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -170,7 +168,7 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR("media"))
+MEDIA_ROOT = str(APPS_DIR / "media")
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
 
@@ -182,7 +180,7 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        "DIRS": [str(APPS_DIR.path("templates"))],
+        "DIRS": [str(APPS_DIR / "templates")],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
@@ -215,7 +213,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # FIXTURES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#fixture-dirs
-FIXTURE_DIRS = (str(APPS_DIR.path("fixtures")),)
+FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),)
 
 # SECURITY
 # ------------------------------------------------------------------------------
