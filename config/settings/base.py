@@ -5,8 +5,7 @@ from pathlib import Path
 
 import environ
 
-# (everycheese/config/settings/base.py.parents[2] = everycheese/)
-BASE_DIR = Path(__file__).parents[2]
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "everycheese"
 
 env = environ.Env()
